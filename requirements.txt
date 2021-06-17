@@ -6,3 +6,4 @@ Django-filter==2.4.0
 Django-rest-auth==0.9.5
 requests==2.25.1
 requests-oauthlib==1.3.0
+beautifulsoup4==4.9.3

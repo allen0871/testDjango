@@ -20,5 +20,6 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('hotnews/', views.get_BaiduHotNews),
     url(r'^$', views.hello),
 ]
