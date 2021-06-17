@@ -1,3 +1,4 @@
+# -- coding: utf-8 -
 from django.http import HttpResponse, JsonResponse
 import requests
 from bs4 import BeautifulSoup
@@ -9,16 +10,17 @@ hotNewsUpdateTime = datetime.now()
 
 def bad_request_param_response():
     response = {}
-    response["content"] = {}
+    response["result"] = {}
     response["status"] = 1
     response["message"] = "请求参数错误"
     response["code"] = 500
     return JsonResponse(response)
 
 
-def standard_response(resDict, code=200, status=0, message='success'):
+def standard_response(code=200, status=0, message='success', resDict={}, result=True):
     response = {}
-    response["content"] = resDict
+    response["datas"] = resDict
+    response["result"] = result
     response["status"] = status
     response["message"] = message
     response["code"] = code
@@ -44,9 +46,9 @@ def get_BaiduHotNews(request):
         hotNews = get_pages(html)
         hotNewsUpdateTime = datetime.now()
     if len(hotNews) >= 10:
-        return standard_response({'result': hotNews[0:10]})
+        return standard_response(result=hotNews)
     else:
-        return standard_response({'result': ['热点获取失败']})
+        return standard_response(result=['热点获取失败'])
 
 def get_html(url,headers):
     r = requests.get(url,headers=headers)
