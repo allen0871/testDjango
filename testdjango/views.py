@@ -37,18 +37,23 @@ def get_BaiduHotNews(request):
     inter = nowTime - hotNewsUpdateTime
     if inter.seconds > 60*10 or len(hotNews) == 0:
         print('获取百度热点')
-        url = 'https://top.baidu.com/board?tab=realtime'
-        headers = {
-            'User-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/60.0.3112.113 Safari/537.36',
-            'accept': 'application/json, text/plain, */*'}
-        html = get_html(url, headers)
-        hotNews = get_pages(html)
-        hotNewsUpdateTime = datetime.now()
+        update_hotNews()
     if len(hotNews) >= 10:
         return standard_response(result=hotNews)
     else:
         return standard_response(result=['热点获取失败'])
+
+def update_hotNews():
+    global hotNewsUpdateTime
+    global hotNews
+    url = 'https://top.baidu.com/board?tab=realtime'
+    headers = {
+        'User-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/60.0.3112.113 Safari/537.36',
+        'accept': 'application/json, text/plain, */*'}
+    html = get_html(url, headers)
+    hotNews = get_pages(html)
+    hotNewsUpdateTime = datetime.now()
 
 def get_html(url,headers):
     r = requests.get(url,headers=headers)
