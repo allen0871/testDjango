@@ -3,6 +3,7 @@
 # python
 celerybeat-schedule
 __pycache__/
+testdjango/__pycache__/
 test/
 00*.py
 Pipfile.lock
