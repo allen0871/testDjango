@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +125,23 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REDIS_HOST = "127.0.0.1"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [(REDIS_HOST, 6379)]},
+    }
+}
+
+
+# Celery settings
+CELERY_REDIS_HOST = "redis://" + REDIS_HOST + ":6379/0"
+CELERY_BROKER_URL = CELERY_REDIS_HOST
+#: Only add pickle to this list if your broker is secured
+#: from unwanted access (see userguide/security.html)
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_RESULT_BACKEND = CELERY_REDIS_HOST
+#CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TASK_SERIALIZER = "json"
