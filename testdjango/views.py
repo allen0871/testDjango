@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import timedelta
 from datetime import datetime
+import json
 
 hotNews = []
 hotNewsUpdateTime = datetime.now()
@@ -26,6 +27,14 @@ def standard_response(code=200, status=0, message='success', resDict={}, result=
     response["code"] = code
     print(response)
     return JsonResponse(response)
+
+def get_request_body(request):
+    try:
+        data = json.loads(request.body)
+    except Exception as e:
+        data = {}
+        print(e)
+    return data
 
 def hello(request):
     return HttpResponse("Hello world ! ")
@@ -67,6 +76,15 @@ def checkClassName(obj, startText):
         if len(keys) > 0 and keys[0].startswith(startText):
             ret = True
     return ret
+
+def get_weather(request):
+    cityId = request.GET.get('citykey')
+    url = 'http://wthrcdn.etouch.cn/weather_mini?citykey=%s' % cityId
+    r = requests.get(url)
+    text = r.text
+    result = json.loads(text)
+    print(result)
+    return JsonResponse(result)
 
 
 def get_pages(html):

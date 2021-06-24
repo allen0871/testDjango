@@ -23,5 +23,6 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hotnews/', views.get_BaiduHotNews),
+    path('weather/', views.get_weather),
     url(r'^$', views.hello),
 ] + static(settings.STATIC_URL,document_root = settings.STATIC_ROOT)
