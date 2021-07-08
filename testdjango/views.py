@@ -43,8 +43,8 @@ def get_BaiduHotNews(request):
     global hotNewsUpdateTime
     global hotNews
     nowTime = datetime.now()
-    inter = nowTime - hotNewsUpdateTime
-    if inter.seconds > 60*10 or len(hotNews) == 0:
+    //inter = nowTime - hotNewsUpdateTime
+    if len(hotNews) < 10:
         print('获取百度热点')
         update_hotNews()
     if len(hotNews) >= 10:
