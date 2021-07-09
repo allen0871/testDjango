@@ -2,9 +2,11 @@
 from django.http import HttpResponse, JsonResponse
 import requests
 from bs4 import BeautifulSoup
-from datetime import timedelta
 from datetime import datetime
 import json
+
+from myEPD.models import hotNewsTable
+from testdjango.celery import app
 
 hotNews = []
 hotNewsUpdateTime = datetime.now()
@@ -42,8 +44,10 @@ def hello(request):
 def get_BaiduHotNews(request):
     global hotNewsUpdateTime
     global hotNews
-    #nowTime = datetime.now()
-    #inter = nowTime - hotNewsUpdateTime
+    hotNews.clear()
+    query = hotNewsTable.objects.all()
+    for item in query:
+        hotNews.append(item.title)
     if len(hotNews) < 10:
         print('获取百度热点')
         update_hotNews()
@@ -63,9 +67,14 @@ def update_hotNews():
     html = get_html(url, headers)
     hotNews = get_pages(html)
     hotNewsUpdateTime = datetime.now()
+    hotNewsTable.objects.all().delete()
+    for item in hotNews:
+        hot = hotNewsTable()
+        hot.title = item
+        hot.save()
 
 def get_html(url,headers):
-    r = requests.get(url,headers=headers)
+    r = requests.get(url, headers=headers)
     r.encoding = r.apparent_encoding
     return r.text
 
@@ -107,3 +116,12 @@ def get_pages(html):
                         if checkClassName(item,'title'):
                             all.append(item.contents[0].string.strip())
     return all
+
+@app.task(bind=True)
+def debug_task(self):
+    print('hello')
+
+@app.task(bind=True)
+def updateHotNews_task(self):
+    print('update hotnews task start')
+    update_hotNews()

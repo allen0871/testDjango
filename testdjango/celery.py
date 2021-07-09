@@ -4,7 +4,6 @@
 from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
-from . import views
 
 # 设置django环境
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'testdjango.settings')
@@ -14,11 +13,3 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # 发现任务文件每个app下的task.py
 app.autodiscover_tasks()
 
-@app.task(bind=True)
-def debug_task(self):
-    print('Request: {0!r}'.format(self.request))
-
-@app.task(bind=True)
-def updateHotNews_task(self):
-    print('update hotnews task start')
-    views.update_hotNews()
