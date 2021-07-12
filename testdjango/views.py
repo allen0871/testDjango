@@ -47,6 +47,7 @@ def get_BaiduHotNews(request):
     hotNews.clear()
     query = hotNewsTable.objects.all()
     for item in query:
+        print('get %s' % item.title)
         hotNews.append(item.title)
     if len(hotNews) < 10:
         print('获取百度热点')
@@ -71,10 +72,11 @@ def update_hotNews():
     for item in hotNews:
         hot = hotNewsTable()
         hot.title = item
+        print(item)
         hot.save()
 
 def get_html(url,headers):
-    r = requests.get(url, headers=headers)
+    r = requests.get(url, headers=headers, timeout=5)
     r.encoding = r.apparent_encoding
     return r.text
 
