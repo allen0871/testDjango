@@ -115,8 +115,8 @@ def get_pages(html):
                 if checkClassName(eachTitle,'content'):
                     allTitle = eachTitle.find_all('a')
                     for item in allTitle:
-                        if checkClassName(item,'title'):
-                            all.append(item.contents[0].string.strip())
+                        if checkClassName(item,'title') and len(item.contents)>1:
+                            all.append(item.contents[1].contents[0].string.strip())
     return all
 
 @app.task(bind=True)
